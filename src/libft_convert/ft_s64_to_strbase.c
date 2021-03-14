@@ -1,0 +1,57 @@
+#include "libft_convert.h"
+#include "libft_string.h"
+
+static void								get_result_sign(t_s64 nbr, t_char* result, t_size i)
+{
+	if (nbr < 0)
+	{
+		result[i] = '-';
+		++i;
+	}
+	result[i] = '\0';
+}
+
+static t_size							convert_to_base(t_s64 nbr, t_char* result, t_char const* base, t_size radix)
+{
+	t_u8								temp;
+	t_size 								i;
+
+	i = 0;
+
+	if (nbr < 0)
+		nbr *= -1;
+
+	while (nbr != 0)
+	{
+		temp = nbr % radix;
+		nbr /= radix;
+
+		result[i] = base[temp];
+
+		++i;
+	}
+
+	return (i);
+} 
+
+t_char*									ft_s64_to_strbase(t_s64 nbr, t_char const* base)
+{
+	t_char  							result[SIZE_64BITS_BIN_BUFFER];
+	t_size 								radix;
+	t_size								i;
+
+	#if (NULL_POINTER_EXCEPTION_CHECK)
+		if (base == NULL)
+			return NULL;
+	#endif
+
+	radix = ft_strlen(base);
+
+	if (radix == 0 || radix == 1)
+		return (NULL);
+
+	i = convert_to_base(nbr, result, base, radix);
+	get_result_sign(nbr, result, i);
+
+	return (ft_strrev(result));
+}
